@@ -99,40 +99,65 @@ if __name__ == '__main__':
                 if os.path.exists(filename1) and not os.path.exists(filename2):
                     os.rename(filename1,filename2)
                     print("File was renamed")
-                    reponse = "SUCCES"
+                    reponse = "SUCCESS"
                 else:
                     print("Error")
                     reponse = "ERROR"
 
                 conn.send(reponse.encode('ascii','ignore'))
             
+
             elif user_request[0] == "--UPLOAD_FILE":
                 os.system('CLS')
-                print("# # # UPLOAD FILE # # #")
-                # (2) UPLOAD_ACK
-                reponse = "UPLOAD_ACK"
-                conn.send(reponse.encode('ascii','ignore'))
-                reponse = conn.recv(1024)
-                size = reponse.decode('ascii','ignore')
-                print(size)
-                tam = int(size)
-                # (4) UPLOAD_ACK
-                if tam < largest_frame:
-                    reponse = "UPLOAD_ACK"
-                    conn.send(reponse.encode('ascii','ignore'))
-                    f = open("Descarga.txt",'wb')
+                print("# # # Upload File # # #")
+                data = conn.recv(1024)
+                reponse = data.decode('ascii','ignore')
+                fsize = int(reponse)
+                if fsize <= largest_frame:
+                    ack = "UPLOAD_ACK" 
+                    conn.send(ack.encode('ascii','ignore'))
+                    reponse = data.decode('ascii','ignore')
+                    filename =  "UPLOADED" + user_request[1]
+                    f = open(filename,'wb')
                     l = conn.recv(1024)
                     while (l):
                         f.write(l)
                         l = conn.recv(1024)
                     f.close()
                 else:
-                    conn.send("ERROR".encode('ascii','ignore'))
+                    nack = "ERROR"
+                    conn.send(nack.encode('ascii','ignore'))
+
+
+
+
+            #elif user_request[0] == "--UPLOAD_FILE":
+            #    os.system('CLS')
+            #    print("# # # UPLOAD FILE # # #")
+                # (2) UPLOAD_ACK
+            #    reponse = "UPLOAD_ACK"
+            #    conn.send(reponse.encode('ascii','ignore'))
+            #    reponse = conn.recv(1024)
+            #    size = reponse.decode('ascii','ignore')
+            #    print(size)
+            #    tam = int(size)
+                # (4) UPLOAD_ACK
+            #    if tam < largest_frame:
+            #        reponse = "UPLOAD_ACK"
+            #        conn.send(reponse.encode('ascii','ignore'))
+            #        f = open("Descarga.txt",'wb')
+            #        l = conn.recv(1024)
+            #        while (l):
+            #            f.write(l)
+            #            l = conn.recv(1024)
+            #        f.close()
+            #    else:
+            #        conn.send("ERROR".encode('ascii','ignore'))
                 
-            else:
-                print("Error")
-                reponse = "INVALID COMMAND"
-                conn.send(reponse.encode('ascii','ignore'))
+            #else:
+            #    print("Error")
+            #    reponse = "INVALID COMMAND"
+            #    conn.send(reponse.encode('ascii','ignore'))
 
             conn.close() 
             
