@@ -94,6 +94,8 @@ if __name__ == '__main__':
             data = s.recv(1024)
             reponse = data.decode('ascii','ignore')
             print(reponse)
+            if reponse == "ERROR":
+                sg.Popup(reponse + ": " + values[1] + " does not exist")
             sg.Popup(reponse + ": " + values[1] + " was renamed to " + values[2])
     
         # Delete Option
@@ -109,35 +111,30 @@ if __name__ == '__main__':
             else:
                 sg.Popup(reponse + ": cant delete " + values[1])
 
-        elif ui_option == "Upload":
-            # (1) UPLOAD_FILE <nombre_fichero>
-            val_list = ["--UPLOAD_FILE", values[1], values[2]]
+        elif ui_option=="Upload":
             filename = values[1]
-            upload = '\n'.join(val_list)
-            s.send(upload.encode('ascii','ignore'))
-            data = s.recv(1024)
-            reponse = data.decode('ascii','ignore')
-            print(reponse)
-            # (3) LONGITUD
-            filesize = os.path.getsize(values[1])
-            s.send(bytes(str(filesize), 'utf8'))
-
-            data = s.recv(1024)
-            reponse = data.decode('ascii','ignore')
-
-            # Upload option
-            if reponse == "UPLOAD_ACK":
-                print("ACK Recibido. Enviando Contenido Del Fichero")
-                f = open(filename,'rb')
-                l = f.read(1024)
-                while (l):
-                    s.send(l)
+            val_list = ["--UPLOAD_FILE",filename]
+            arguments = '\n'.join(val_list)
+            print(filename)
+            if os.path.exists(filename):
+                s.send(arguments.encode('ascii','ignore'))
+                fsize = os.path.getsize(filename)
+                s.send(bytes(str(fsize), 'utf8'))
+                data = s.recv(1024)
+                reponse = data.decode('ascii','ignore')
+                if reponse == "UPLOAD_ACK":
+                    f = open(filename,'rb')
                     l = f.read(1024)
-                f.close()
-                sg.Popup("SUCCES: a copy of " + filename + " was created on server side")
+                    while (l):
+                        s.send(l)
+                        l = f.read(1024)
+                    f.close()
+                    sg.Popup(reponse + ": " + filename + " was uploaded")
+                else:
+                    sg.Popup("ERROR")
             else:
-                print("ERROR")
-               
+                sg.Popup("ERROR: " + filename + " does not exist")
+ 
     window.close()
     s.close()
 
