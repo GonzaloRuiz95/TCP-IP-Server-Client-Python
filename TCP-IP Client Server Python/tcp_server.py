@@ -128,37 +128,6 @@ if __name__ == '__main__':
                     nack = "ERROR"
                     conn.send(nack.encode('ascii','ignore'))
 
-
-
-
-            #elif user_request[0] == "--UPLOAD_FILE":
-            #    os.system('CLS')
-            #    print("# # # UPLOAD FILE # # #")
-                # (2) UPLOAD_ACK
-            #    reponse = "UPLOAD_ACK"
-            #    conn.send(reponse.encode('ascii','ignore'))
-            #    reponse = conn.recv(1024)
-            #    size = reponse.decode('ascii','ignore')
-            #    print(size)
-            #    tam = int(size)
-                # (4) UPLOAD_ACK
-            #    if tam < largest_frame:
-            #        reponse = "UPLOAD_ACK"
-            #        conn.send(reponse.encode('ascii','ignore'))
-            #        f = open("Descarga.txt",'wb')
-            #        l = conn.recv(1024)
-            #        while (l):
-            #            f.write(l)
-            #            l = conn.recv(1024)
-            #        f.close()
-            #    else:
-            #        conn.send("ERROR".encode('ascii','ignore'))
-                
-            #else:
-            #    print("Error")
-            #    reponse = "INVALID COMMAND"
-            #    conn.send(reponse.encode('ascii','ignore'))
-
             conn.close() 
             
             if data == b'shutdown':
