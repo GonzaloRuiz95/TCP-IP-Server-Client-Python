@@ -48,7 +48,7 @@ if __name__ == '__main__':
         if event in (None, 'Cancel'):	# if user closes window or clicks cancel
             break 
         if event == "About":
-            sg.Popup("A program by Gonzalo Ruiz and Arturo López:\n ")
+            sg.Popup("Code by Gonzalo Ruiz:\n ")
 
         ui_option = values[0]
         # List Option
